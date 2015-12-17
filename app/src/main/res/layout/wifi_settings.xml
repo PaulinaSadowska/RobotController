@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+	android:layout_marginBottom="@dimen/margin_settings_vertical"
+	android:layout_marginTop="@dimen/margin_settings_vertical"
+	android:layout_marginLeft="@dimen/margin_settings_horizontal"
+	android:layout_marginRight="@dimen/margin_settings_horizontal"
+    android:orientation="vertical">
+    
+ <LinearLayout
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:orientation="vertical">
+
+
+    	<TextView
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content" 
+			android:text="@string/ip_setting_label"/>
+
+     <EditText
+         android:id="@+id/address_input"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:gravity="center"
+         android:singleLine="true"
+         android:inputType="number"
+         android:maxLength="15"
+         android:digits="0123456789."/>
+
+     	<TextView
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content" 
+			android:text="@string/port_setting_label"/>
+
+			
+			<EditText 
+				android:id="@+id/port_input"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:gravity="center"
+				android:singleLine="true"
+				android:inputType="number"
+				android:maxLength="4"/>
+
+     	
+     	<TextView
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content" 
+			android:text="@string/command_setting_label"/>
+
+
+			<EditText
+					android:id="@+id/command_input"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:gravity="center"
+					android:singleLine="true"
+					android:inputType="text" />
+
+
+     			
+		<Button android:id="@+id/settings_done"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:text="@string/settings_done" />
+    </LinearLayout>
+</LinearLayout>
