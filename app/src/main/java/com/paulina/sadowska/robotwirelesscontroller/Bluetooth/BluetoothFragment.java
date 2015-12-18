@@ -42,6 +42,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.paulina.sadowska.robotwirelesscontroller.Constants;
+import com.paulina.sadowska.robotwirelesscontroller.MessageManager;
 import com.paulina.sadowska.robotwirelesscontroller.R;
 import com.paulina.sadowska.robotwirelesscontroller.Utilities;
 
@@ -61,11 +62,8 @@ public class BluetoothFragment extends Fragment {
     // Layout Views
     private TextView messageFlow;
 
-    Handler controlMessageThread;
-
-    private char[] inBuffer = new char[Constants.INPUT_MESSAGE_LENGTH];
-    private boolean messageInProgress = false;
-    private int messageIndex = 0;
+    private Handler controlMessageThread;
+    private MessageManager messageManager;
 
     /**
      * Name of the connected device
@@ -90,24 +88,6 @@ public class BluetoothFragment extends Fragment {
 
 
 
-    //Message in format {AAABBB} where A - alpha, B-velocity
-    //or {S} when robot shouldn't move
-    private String getMessageText(){
-        String message = Constants.START_BYTE_STR;
-
-        if(Utilities.getRobotIsMovingFlag())
-            message += Constants.ROBOT_MOVE_STR;
-        else
-            message += Constants.ROBOT_STOP_STR;
-
-
-        message += String.format("%03d", Utilities.getAlpha());
-        message += Utilities.getVelocity();
-        message += Constants.STOP_BYTE_STR;
-        return message;
-    }
-
-
 
     // Define the task to be run here
     private Runnable sendControlMessage = new Runnable() {
@@ -115,7 +95,7 @@ public class BluetoothFragment extends Fragment {
         public void run() {
             if(mBluetoothService.getState() == BluetoothService.STATE_CONNECTED)
             {
-                sendMessage(getMessageText()); // message in format with angle np {090089} (alpha = 90 velocity = 89)
+                sendMessage(messageManager.getMessageText()); // message in format with angle np {090089} (alpha = 90 velocity = 89)
 
                 // Repeat this runnable code again every 0.1 seconds
                 controlMessageThread.postDelayed(sendControlMessage, Constants.TIME_TO_SEND_CONTROL_MSG_MS);
@@ -147,6 +127,7 @@ public class BluetoothFragment extends Fragment {
         }
         // Create the Handler object (on the main thread by default)
         controlMessageThread = new Handler();
+        messageManager = new MessageManager();
 
     }
 
@@ -200,71 +181,6 @@ public class BluetoothFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         messageFlow = (TextView) view.findViewById(R.id.message_flow);
-    }
-
-
-    private void WriteCurrentToTextViews()
-    {
-        int current1;
-        int current2;
-        String temp = inBuffer[2]+""+inBuffer[3]+""+inBuffer[4]+""+inBuffer[5];
-        try {
-            current1 = Integer.parseInt(temp);
-        } catch (NumberFormatException ex) {
-            current1 = 0;
-        }
-        temp = inBuffer[7]+""+inBuffer[8]+""+inBuffer[9]+""+inBuffer[10];
-        try {
-            current2 = Integer.parseInt(temp);
-        } catch (NumberFormatException ex) {
-            current2 = 0;
-        }
-
-        if(inBuffer[1]==Constants.MINUS_SIGN)
-            current1 *= (-1);
-        if(inBuffer[6]==Constants.MINUS_SIGN)
-            current2 *= (-1);
-
-        Utilities.setCurrentmV(current1, 1);
-        Utilities.setCurrentmV(current2, 2);
-
-    }
-
-    void WriteReadedMessageToInBuffer(String message)
-    {
-        for(char c: message.toCharArray())
-        {
-            if(c==Constants.START_BYTE)
-            {
-                messageIndex = 0;
-                messageInProgress = true;
-                inBuffer[messageIndex] = c;
-            }
-            else if(c==Constants.STOP_BYTE && messageInProgress)
-            {
-                messageIndex++;
-                messageInProgress = false;
-                inBuffer[messageIndex] = c;
-                if(messageIndex==Constants.INPUT_MESSAGE_LENGTH-1)
-                {
-                    WriteCurrentToTextViews();
-                }
-                /*else if (messageIndex == Constants.INPUT_CONNECTION_MESSAGE_LENGTH- 1)
-                {
-                    if(inBuffer[Constants.INDEX_CONNECTION_INFO]==Constants.CONNECTION_ACK_BYTE)
-                    {
-                        Utilities.setConnectionState(true);
-                        //start sending data, init sending thread
-                        controlMessageThread.post(sendControlMessage);
-                    }
-                }*/
-            }
-            else if(messageInProgress)
-            {
-                messageIndex++;
-                inBuffer[messageIndex] = c;
-            }
-        }
     }
 
     /**
@@ -374,7 +290,7 @@ public class BluetoothFragment extends Fragment {
                     // construct a string from the valid bytes in the buffer
                     String readMessage = new String(readBuf, 0, msg.arg1);
                     messageFlow.append(mConnectedDeviceName + ":  " + readMessage + "\n");
-                    WriteReadedMessageToInBuffer(readMessage);
+                    messageManager.WriteReceivedMessageToInBuffer(readMessage);
                     break;
                 case Constants.MESSAGE_DEVICE_NAME:
                     // save the connected device's name
