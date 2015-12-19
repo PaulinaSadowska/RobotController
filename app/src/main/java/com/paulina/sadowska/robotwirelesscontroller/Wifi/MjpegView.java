@@ -22,6 +22,7 @@ public class MjpegView extends SurfaceView implements SurfaceHolder.Callback {
     public final static int SIZE_STANDARD = 1;
     public final static int SIZE_BEST_FIT = 4;
     public final static int SIZE_FULLSCREEN = 8;
+    public final static int SIZE_FULLSCREEN_CENTERED = 16;
 
     SurfaceHolder holder;
     Context saved_context;
@@ -79,6 +80,13 @@ public class MjpegView extends SurfaceView implements SurfaceHolder.Callback {
             }
             if (displayMode == MjpegView.SIZE_FULLSCREEN)
                 return new Rect(0, 0, dispWidth, dispHeight);
+            if (displayMode == MjpegView.SIZE_FULLSCREEN_CENTERED)
+            {
+                //TODO - repair it when camera is stable -.-
+
+                int translY = 0;
+                return new Rect(0, translY, dispWidth, dispHeight-translY);
+            }
             return null;
         }
 

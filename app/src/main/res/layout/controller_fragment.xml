@@ -5,20 +5,20 @@
     tools:context=".MainActivity"
     android:id="@+id/root_relative_layout">
 
-    <View android:layout_width="110dp"
-        android:layout_height="110dp"
+    <View android:layout_width="@dimen/controller_outer_circle_diameter"
+        android:layout_height="@dimen/controller_outer_circle_diameter"
         android:layout_centerInParent="true"
         android:background="@drawable/outer_circle"
         android:id="@+id/outer_circle_view_drawing" />
 
-    <View android:layout_width="140dp"
-        android:layout_height="140dp"
+    <View android:layout_width="@dimen/controller_outer_margin_circle_diameter"
+        android:layout_height="@dimen/controller_outer_margin_circle_diameter"
         android:layout_centerInParent="true"
         android:id="@+id/outer_circle_view_margin" />
 
 
-    <View android:layout_width="80dp"
-        android:layout_height="80dp"
+    <View android:layout_width="@dimen/controller_inner_circle_diameter"
+        android:layout_height="@dimen/controller_inner_circle_diameter"
         android:translationZ="5dp"
         android:elevation="3dp"
         android:layout_centerInParent="true"

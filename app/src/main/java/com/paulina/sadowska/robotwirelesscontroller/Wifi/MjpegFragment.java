@@ -8,6 +8,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -82,9 +84,9 @@ public class MjpegFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         SharedPreferences preferences = getActivity().getSharedPreferences("SAVED_VALUES", getActivity().MODE_PRIVATE);
-        ip_adr = preferences.getString("ip_adr", ip_adr);
-        ip_port = preferences.getInt("ip_port", ip_port);
-        ip_command = preferences.getString("ip_command", ip_command);
+        ip_adr = preferences.getString(Constants.IP_ADRESS_STR, ip_adr);
+        ip_port = preferences.getInt(Constants.IP_PORT_CAMERA_STR, ip_port);
+        ip_command = preferences.getString(Constants.IP_COMMAND_STR, ip_command);
 
         StringBuilder sb = new StringBuilder();
         sb.append(Constants.HTTP_STRING);
@@ -99,21 +101,15 @@ public class MjpegFragment extends Fragment {
         if (mv != null) {
             mv.setResolution(width, height);
         }
-        mv.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
-                        | View.SYSTEM_UI_FLAG_FULLSCREEN
-                        | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
 
-        getActivity().setTitle(R.string.title_connecting);
+        setStatus(R.string.title_connecting_to_camera);
         ConnectivityManager connMgr = (ConnectivityManager)
                 getActivity().getSystemService(getActivity().CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
             new DoRead().execute(URL);
         } else {
-            getActivity().setTitle("not connected");
+            setStatus(R.string.title_not_connected_to_camera);
         }
     }
 
@@ -128,7 +124,7 @@ public class MjpegFragment extends Fragment {
                 if (networkInfo != null && networkInfo.isConnected()) {
                     new DoRead().execute(URL);
                 } else {
-                    getActivity().setTitle("not connected");
+                    setStatus(R.string.title_not_connected_to_camera);
                 }
                 suspending = false;
             }
@@ -170,7 +166,7 @@ public class MjpegFragment extends Fragment {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                getActivity().setTitle(R.string.title_imageerror);
+                setStatus(R.string.title_imageerror);
                 return;
             }
         });
@@ -192,16 +188,16 @@ public class MjpegFragment extends Fragment {
             mv.setSource(result);
             if (result != null) {
                 result.setSkip(1);
-                getActivity().setTitle(R.string.app_name);
+                setStatus(R.string.app_name);
             } else {
-                getActivity().setTitle(R.string.title_disconnected);
+                setStatus(R.string.title_not_connected_to_camera);
             }
-            mv.setDisplayMode(MjpegView.SIZE_BEST_FIT);
+            mv.setDisplayMode(MjpegView.SIZE_FULLSCREEN_CENTERED);
             int w = mv.getWidth();
            // int h = mv.getHeight();
             int h = 3 * w / 4;
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(w, h);
-            //layoutParams.setMargins(5, 5, w, h);
+            layoutParams.setMargins(5, 5, w, h);
             mv.setLayoutParams(layoutParams);
             mv.showFps(false);
         }
@@ -239,6 +235,40 @@ public class MjpegFragment extends Fragment {
                 is.close();
             }
         }*/
+    }
+
+    /**
+     * Updates the status on the action bar.
+     *
+     * @param resId a string resource ID
+     */
+    private void setStatus(int resId) {
+        AppCompatActivity activity = (AppCompatActivity)getActivity();
+        if (null == activity) {
+            return;
+        }
+        final ActionBar actionBar = activity.getSupportActionBar();
+        if (null == actionBar) {
+            return;
+        }
+        actionBar.setSubtitle(resId);
+    }
+
+    /**
+     * Updates the status on the action bar.
+     *
+     * @param subTitle status
+     */
+    private void setStatus(CharSequence subTitle) {
+        AppCompatActivity activity = (AppCompatActivity)getActivity();
+        if (null == activity) {
+            return;
+        }
+        final ActionBar actionBar = activity.getSupportActionBar();
+        if (null == actionBar) {
+            return;
+        }
+        actionBar.setSubtitle(subTitle);
     }
 
 }

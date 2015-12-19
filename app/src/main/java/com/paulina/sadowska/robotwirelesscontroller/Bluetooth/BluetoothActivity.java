@@ -26,21 +26,28 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.paulina.sadowska.robotwirelesscontroller.ControllerFragment;
+import com.paulina.sadowska.robotwirelesscontroller.MessageManager;
 import com.paulina.sadowska.robotwirelesscontroller.R;
 import com.paulina.sadowska.robotwirelesscontroller.ReceivedDataFragment;
 import com.paulina.sadowska.robotwirelesscontroller.VelocityFragment;
 
-public class BluetoothActivity extends AppCompatActivity {
+public class BluetoothActivity extends AppCompatActivity implements BluetoothFragment.OnMessageReceivedCallback {
 
     public static final String TAG = "MainActivity";
+    public MessageManager manager;
+    ReceivedDataFragment receivedDataFragment;
 
+    @Override
+    public void onMessageReceivedCallback() {
+        receivedDataFragment.bindData();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.bluetooth_activity);
+        setContentView(R.layout.activity_bluetooth);
 
         if (savedInstanceState == null) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -54,11 +61,17 @@ public class BluetoothActivity extends AppCompatActivity {
             VelocityFragment velocityFragment = new VelocityFragment();
             transaction.replace(R.id.velocity_fragment, velocityFragment);
 
-            ReceivedDataFragment receivedDataFragment = new ReceivedDataFragment();
+            receivedDataFragment = new ReceivedDataFragment();
             transaction.replace(R.id.received_data_fragment, receivedDataFragment);
 
             transaction.commit();
         }
+        manager = new MessageManager(new MessageManager.OnMessageReceived() {
+            @Override
+            public void messageReceived() {
+                receivedDataFragment.bindData();
+            }
+        });
     }
 
     @Override
@@ -76,4 +89,5 @@ public class BluetoothActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         return super.onOptionsItemSelected(item);
     }
+
 }

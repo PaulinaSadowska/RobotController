@@ -9,6 +9,18 @@ public class MessageManager {
     private char[] inBuffer = new char[Constants.INPUT_MESSAGE_LENGTH];
     private boolean messageInProgress = false;
     private int messageIndex = 0;
+    private OnMessageReceived receiveListener;
+
+    public MessageManager(OnMessageReceived listener)
+    {
+        receiveListener = listener;
+    }
+
+    //Declare the interface. The method messageReceived(String message) will must be implemented in the MyActivity
+    //class at on asyncTask doInBackground
+    public interface OnMessageReceived {
+        void messageReceived();
+    }
 
     //Message in format {AAABBB} where A - alpha, B-velocity
     //or {S} when robot shouldn't move
@@ -52,7 +64,7 @@ public class MessageManager {
 
         Utilities.setCurrentmV(current1, 1);
         Utilities.setCurrentmV(current2, 2);
-
+        receiveListener.messageReceived();
     }
 
     public void WriteReceivedMessageToInBuffer(String message)

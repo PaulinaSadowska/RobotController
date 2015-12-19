@@ -48,4 +48,10 @@ public interface Constants {
     String COLON_STRING = ":";
     String SLASH_STRING = "/";
 
+    //settings wifi preferences constant strings
+    String IP_ADRESS_STR = "ip_addr";
+    String IP_PORT_CAMERA_STR = "ip_port_camera";
+    String IP_PORT_TCP_STR = "ip_port_tcp";
+    String IP_COMMAND_STR = "ip_command";
+
 }

@@ -1,6 +1,8 @@
 package com.paulina.sadowska.robotwirelesscontroller;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -15,7 +17,7 @@ import android.widget.RelativeLayout;
 public class ControllerFragment extends Fragment implements View.OnTouchListener {
 
     //used to determine inner circle dimensions
-    private static final int INNER_CIRCLE_DIAMETER = 200;
+    private int INNER_CIRCLE_DIAMETER = 180;
 
     private View mInnerCircleView;
     private View mOuterCircleMarginView;
@@ -24,10 +26,22 @@ public class ControllerFragment extends Fragment implements View.OnTouchListener
     private int _xDelta;
     private int _yDelta;
 
+    private final Handler mHandler = new Handler();
+
     private int _xCenter;
     private int _yCenter;
     private boolean centered = false;
     private double _Radius;
+
+    private final Runnable centerInnerCircle = new Runnable() {
+        @SuppressLint("InlinedApi")
+        @Override
+        public void run() {
+            RelativeLayout.LayoutParams layParams = (RelativeLayout.LayoutParams) mInnerCircleView.getLayoutParams();
+            layParams = centerInnerCircle(layParams);
+            mInnerCircleView.setLayoutParams(layParams);
+        }
+    };
 
 
     @Override
@@ -43,6 +57,7 @@ public class ControllerFragment extends Fragment implements View.OnTouchListener
             @Override
             public void onGlobalLayout() {
 
+                INNER_CIRCLE_DIAMETER = mInnerCircleView.getWidth();
                 _xCenter = mOuterCircleMarginView.getLeft() + mOuterCircleMarginView.getWidth() / 2 - INNER_CIRCLE_DIAMETER / 2;
                 _yCenter = mOuterCircleMarginView.getTop() + mOuterCircleMarginView.getHeight() / 2 - INNER_CIRCLE_DIAMETER / 2;
                 _Radius = mOuterCircleMarginView.getWidth() / 2;
@@ -60,6 +75,11 @@ public class ControllerFragment extends Fragment implements View.OnTouchListener
         return rootView;
     }
 
+
+    public void fragmentDimensionsChanged() {
+        //center after 10ms
+       mHandler.postDelayed(centerInnerCircle, 20);
+    }
 
     private RelativeLayout.LayoutParams centerInnerCircle(RelativeLayout.LayoutParams layoutParams)
     {

@@ -53,6 +53,7 @@ import com.paulina.sadowska.robotwirelesscontroller.Utilities;
 public class BluetoothFragment extends Fragment {
 
     private static final String TAG = "BluetoothFragment";
+    MessageManager messageManager;
 
     // Intent request codes
     private static final int REQUEST_CONNECT_DEVICE_SECURE = 1;
@@ -63,7 +64,6 @@ public class BluetoothFragment extends Fragment {
     private TextView messageFlow;
 
     private Handler controlMessageThread;
-    private MessageManager messageManager;
 
     /**
      * Name of the connected device
@@ -86,8 +86,22 @@ public class BluetoothFragment extends Fragment {
      */
     private BluetoothService mBluetoothService = null;
 
+    OnMessageReceivedCallback mCallback;
+    // Container Activity must implement this interface
+    public interface OnMessageReceivedCallback {
+        void onMessageReceivedCallback();
+    }
 
-
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            mCallback = (OnMessageReceivedCallback) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnHeadlineSelectedListener");
+        }
+    }
 
     // Define the task to be run here
     private Runnable sendControlMessage = new Runnable() {
@@ -127,7 +141,12 @@ public class BluetoothFragment extends Fragment {
         }
         // Create the Handler object (on the main thread by default)
         controlMessageThread = new Handler();
-        messageManager = new MessageManager();
+        messageManager = new MessageManager(new MessageManager.OnMessageReceived() {
+            @Override
+            public void messageReceived() {
+                mCallback.onMessageReceivedCallback();
+            }
+        });
 
     }
 

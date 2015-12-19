@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.paulina.sadowska.robotwirelesscontroller.Constants;
 import com.paulina.sadowska.robotwirelesscontroller.R;
 
 public class SettingsActivity extends Activity {
@@ -14,11 +15,13 @@ public class SettingsActivity extends Activity {
     Button settings_done;
 
     EditText address_input;
-    EditText port_input;
+    EditText port_camera_input;
+    EditText port_tcp_input;
     EditText command_input;
 
     String ip_adr = "192.168.1.170";
-    int ip_port = 8080;
+    int ip_port_camera = 8080;
+    int ip_port_tcp = 80;
     String ip_command = "?action=stream";
 
     @Override
@@ -29,16 +32,19 @@ public class SettingsActivity extends Activity {
         Bundle extras = getIntent().getExtras();
 
         address_input = (EditText) findViewById(R.id.address_input);
-        port_input = (EditText) findViewById(R.id.port_input);
+        port_camera_input = (EditText) findViewById(R.id.port_input_camera);
+        port_tcp_input = (EditText) findViewById(R.id.port_input_tcp);
         command_input = (EditText) findViewById(R.id.command_input);
 
         if (extras != null) {
-            ip_adr = extras.getString("ip_adr", ip_adr);
-            ip_port = extras.getInt("ip_port", ip_port);
-            ip_command = extras.getString("ip_command");
+            ip_adr = extras.getString(Constants.IP_ADRESS_STR, ip_adr);
+            ip_port_camera = extras.getInt(Constants.IP_PORT_CAMERA_STR, ip_port_camera);
+            ip_port_tcp = extras.getInt(Constants.IP_PORT_CAMERA_STR, ip_port_tcp);
+            ip_command = extras.getString(Constants.IP_COMMAND_STR);
 
             address_input.setText(String.valueOf(ip_adr));
-            port_input.setText(String.valueOf(ip_port));
+            port_camera_input.setText(String.valueOf(ip_port_camera));
+            port_tcp_input.setText(String.valueOf(ip_port_tcp));
             command_input.setText(ip_command);
         }
 
@@ -54,18 +60,24 @@ public class SettingsActivity extends Activity {
                         s = address_input.getText().toString();
                         ip_adr = s;
 
-                        s = port_input.getText().toString();
+                        s = port_camera_input.getText().toString();
                         if (!"".equals(s)) {
-                            ip_port = Integer.parseInt(s);
+                            ip_port_camera = Integer.parseInt(s);
+                        }
+
+                        s = port_tcp_input.getText().toString();
+                        if (!"".equals(s)) {
+                            ip_port_tcp = Integer.parseInt(s);
                         }
 
                         s = command_input.getText().toString();
                         ip_command = s;
 
                         Intent intent = new Intent();
-                        intent.putExtra("ip_adr", ip_adr);
-                        intent.putExtra("ip_port", ip_port);
-                        intent.putExtra("ip_command", ip_command);
+                        intent.putExtra(Constants.IP_ADRESS_STR, ip_adr);
+                        intent.putExtra(Constants.IP_PORT_CAMERA_STR, ip_port_tcp);
+                        intent.putExtra(Constants.IP_PORT_TCP_STR, ip_port_tcp);
+                        intent.putExtra(Constants.IP_COMMAND_STR, ip_command);
 
                         setResult(RESULT_OK, intent);
                         finish();

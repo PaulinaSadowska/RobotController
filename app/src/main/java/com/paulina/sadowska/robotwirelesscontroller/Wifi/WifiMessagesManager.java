@@ -10,19 +10,19 @@ import com.paulina.sadowska.robotwirelesscontroller.MessageManager;
 public class WifiMessagesManager {
 
     private TCPClient mTcpClient;
-    private MessageManager messageManager;
     private String serverIP;
     private int port;
+    MessageManager manager;
 
     public void connect(){
         new connectTask().execute("");
     }
 
-    public WifiMessagesManager(String serverIP, int port)
+    public WifiMessagesManager(MessageManager m, String serverIP, int port)
     {
         this.serverIP = serverIP;
         this.port = port;
-        messageManager = new MessageManager();
+        manager = m;
     }
 
     public boolean getConnectionState() {
@@ -68,7 +68,7 @@ public class WifiMessagesManager {
             super.onProgressUpdate(values);
             if (values[0] != null) {
                 //display message
-                messageManager.WriteReceivedMessageToInBuffer(values[0]);
+                manager.WriteReceivedMessageToInBuffer(values[0]);
             }
         }
     }

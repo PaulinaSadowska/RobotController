@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="controller_inner_circle_diameter">130dp</dimen>
+    <dimen name="controller_outer_circle_diameter">150dp</dimen>
+    <dimen name="controller_outer_margin_circle_diameter">230dp</dimen>
+
+    <dimen name="margin_velocity_fargment_horizontal">120dp</dimen>
+
+    <dimen name="velocity_text_size">27dp</dimen>
+
+    <dimen name="main_button_width">360dp</dimen>
+    <dimen name="main_button_height">360dp</dimen>
+
+</resources>

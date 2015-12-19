@@ -26,14 +26,21 @@ public class ReceivedDataFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mCurrent1 = (TextView) view.findViewById(R.id.current_1_text);
-        mCurrent1 = (TextView) view.findViewById(R.id.current_2_text);
+        mCurrent2 = (TextView) view.findViewById(R.id.current_2_text);
+
+        if(getActivity().getLocalClassName().equals("Wifi.WifiActivity"))
+        {
+            mCurrent1.setTextColor(getActivity().getResources().getColor(R.color.black));
+            mCurrent2.setTextColor(getActivity().getResources().getColor(R.color.black));
+        }
+        
     }
 
 
-    public void onMessageReceived(int current1, int current2)
+    public void bindData()
     {
-        mCurrent2.setText(Html.fromHtml("I<sub><small>R</sub></small> = " + current1 + " mA"));
-        mCurrent1.setText(Html.fromHtml("I<sub><small>L</sub></small> = " + current2 + " mA"));
+        mCurrent1.setText(Html.fromHtml("I<sub><small>1</sub></small> = " + (int)Utilities.getCurrentmV(1) + " mA"));
+        mCurrent2.setText(Html.fromHtml("I<sub><small>2</sub></small> = " + (int)Utilities.getCurrentmV(2) + " mA"));
     }
 
 }
