@@ -31,16 +31,24 @@ import com.paulina.sadowska.robotwirelesscontroller.R;
 import com.paulina.sadowska.robotwirelesscontroller.ReceivedDataFragment;
 import com.paulina.sadowska.robotwirelesscontroller.VelocityFragment;
 
-public class BluetoothActivity extends AppCompatActivity implements BluetoothFragment.OnMessageReceivedCallback {
+public class BluetoothActivity extends AppCompatActivity implements BluetoothFragment.BluetoothActivityCallback {
 
     public static final String TAG = "MainActivity";
     public MessageManager manager;
     ReceivedDataFragment receivedDataFragment;
+    ControllerFragment controllerFragment;
+
 
     @Override
     public void onMessageReceivedCallback() {
         receivedDataFragment.bindData();
     }
+
+    @Override
+    public void onConnectionStateChangedCallback(boolean isConnected) {
+        controllerFragment.setConnectionState(isConnected);
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +63,7 @@ public class BluetoothActivity extends AppCompatActivity implements BluetoothFra
             BluetoothFragment fragment = new BluetoothFragment();
             transaction.replace(R.id.bluetooth_fragment, fragment);
 
-            ControllerFragment controllerFragment = new ControllerFragment();
+            controllerFragment = new ControllerFragment();
             transaction.replace(R.id.controller_fragment_frame_view, controllerFragment);
 
             VelocityFragment velocityFragment = new VelocityFragment();

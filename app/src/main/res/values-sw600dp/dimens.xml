@@ -5,9 +5,11 @@
     <dimen name="controller_outer_circle_diameter">150dp</dimen>
     <dimen name="controller_outer_margin_circle_diameter">230dp</dimen>
 
-    <dimen name="margin_velocity_fargment_horizontal">120dp</dimen>
+    <dimen name="margin_velocity_fragment_horizontal">120dp</dimen>
 
     <dimen name="velocity_text_size">27dp</dimen>
+    <dimen name="connection_state_text_size">33dp</dimen>
+
 
     <dimen name="main_button_width">360dp</dimen>
     <dimen name="main_button_height">360dp</dimen>

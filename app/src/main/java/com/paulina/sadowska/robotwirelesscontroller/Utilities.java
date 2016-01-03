@@ -12,7 +12,7 @@ public class Utilities {
     static private int alphaOutDeg = 0; //degree to rotate robot
     static private boolean robotIsMoving = false; //determines if the robot should move
     static private double velocityMultiplier = 0.0; //not used yet, depends on analog position
-    static private String velocity = "050";
+    static private int velocity = 50;
     static private int[] currentmV = {0, 0};
 
     public static int  getAlpha() {  return alphaOutDeg; }
@@ -21,8 +21,14 @@ public class Utilities {
     public static double getVelocityMultiplier() {  return velocityMultiplier; }
     public static void   setVelocityMultiplier(double mult) {    velocityMultiplier = mult;   }
 
-    public static String getVelocity() {  return velocity; }
-    public static void   setVelocity(String vel) {    velocity = vel;   }
+    public static int    getVelocity()        { return velocity; }
+    public static void   setVelocity(int vel) { velocity = vel;  }
+
+    public static String getVelocityStr() {
+        int velocity = getVelocity();
+        velocity *= getVelocityMultiplier();
+        return String.format("%03d", velocity);
+    }
 
     public static double getCurrentmV(int nr) {  return currentmV[nr-1]; }
     public static void   setCurrentmV(int curr, int nr) {    currentmV[nr-1] = curr;}

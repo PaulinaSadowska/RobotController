@@ -17,6 +17,18 @@
         android:id="@+id/outer_circle_view_margin" />
 
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:background="@color/white_overlay"
+            android:layout_centerInParent="true"
+            android:text="@string/control_not_allowed"
+            android:textSize="@dimen/connection_state_text_size"
+            android:fontFamily="sans-serif-light"
+            android:id="@+id/connection_state_text_view"/>
+
+
     <View android:layout_width="@dimen/controller_inner_circle_diameter"
         android:layout_height="@dimen/controller_inner_circle_diameter"
         android:translationZ="5dp"
@@ -24,4 +36,5 @@
         android:layout_centerInParent="true"
         android:background="@drawable/inner_circle"
         android:id="@+id/inner_circle_view"/>
+
 </RelativeLayout>

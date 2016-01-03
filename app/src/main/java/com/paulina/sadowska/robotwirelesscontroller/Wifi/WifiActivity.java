@@ -110,7 +110,7 @@ public class WifiActivity extends AppCompatActivity {
             hide();
         }
     };
-
+    private boolean wasConnected = false;
     // Define the task to be run here
     private Runnable sendControlMessage = new Runnable() {
         @Override
@@ -119,16 +119,26 @@ public class WifiActivity extends AppCompatActivity {
             {
                 if(wifiManager.getConnectionState())
                 {
+                    if(!wasConnected)
+                        controllerFragment.setConnectionState(true);
+
                     wifiManager.sendMessage(messageManager.getMessageText());
                     controlMessageThread.postDelayed(sendControlMessage, Constants.TIME_TO_SEND_CONTROL_MSG_MS);
+                    wasConnected = true;
                 }
                 else
                 {
+                    if(wasConnected)
+                        controllerFragment.setConnectionState(false);
                     controlMessageThread.postDelayed(sendControlMessage, 1000);
+                    wasConnected = false;
                 }
             }
             else{
+                if(wasConnected)
+                    controllerFragment.setConnectionState(false);
                 controlMessageThread.postDelayed(sendControlMessage, 1000);
+                wasConnected = false;
             }
         }
     };

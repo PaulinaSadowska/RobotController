@@ -2,8 +2,8 @@
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="@dimen/margin_velocity_fargment_horizontal"
-    android:layout_marginRight="@dimen/margin_velocity_fargment_horizontal"
+    android:layout_marginLeft="@dimen/margin_velocity_fragment_horizontal"
+    android:layout_marginRight="@dimen/margin_velocity_fragment_horizontal"
     xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="horizontal">
 

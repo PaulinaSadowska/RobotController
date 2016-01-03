@@ -86,17 +86,18 @@ public class BluetoothFragment extends Fragment {
      */
     private BluetoothService mBluetoothService = null;
 
-    OnMessageReceivedCallback mCallback;
+    BluetoothActivityCallback mCallback;
     // Container Activity must implement this interface
-    public interface OnMessageReceivedCallback {
+    public interface BluetoothActivityCallback {
         void onMessageReceivedCallback();
+        void onConnectionStateChangedCallback(boolean isConnected);
     }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mCallback = (OnMessageReceivedCallback) activity;
+            mCallback = (BluetoothActivityCallback) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement OnHeadlineSelectedListener");
@@ -224,7 +225,7 @@ public class BluetoothFragment extends Fragment {
     private void sendMessage(String message) {
         // Check that we're actually connected before trying anything
         if (mBluetoothService.getState() != BluetoothService.STATE_CONNECTED) {
-            Toast.makeText(getActivity(), R.string.not_connected, Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getActivity(), R.string.not_connected, Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -288,13 +289,16 @@ public class BluetoothFragment extends Fragment {
                         case BluetoothService.STATE_CONNECTED:
                             connectionWithDeviceEstablished();
                             setStatus(getString(R.string.title_connected_to, mConnectedDeviceName));
+                            mCallback.onConnectionStateChangedCallback(true);
                             break;
                         case BluetoothService.STATE_CONNECTING:
                             setStatus(R.string.title_connecting);
+                            mCallback.onConnectionStateChangedCallback(false);
                             break;
                         case BluetoothService.STATE_LISTEN:
                         case BluetoothService.STATE_NONE:
                             setStatus(R.string.title_not_connected);
+                            mCallback.onConnectionStateChangedCallback(false);
                             break;
                     }
                     break;

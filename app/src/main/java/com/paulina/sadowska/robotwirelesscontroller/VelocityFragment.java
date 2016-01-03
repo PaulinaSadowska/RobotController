@@ -39,8 +39,7 @@ public class VelocityFragment extends Fragment {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 int velocity = i; //i <- progress
-                velocity *= Utilities.getVelocityMultiplier();
-                Utilities.setVelocity(String.format("%03d", velocity));
+                Utilities.setVelocity(velocity);
             }
 
             @Override

@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 /**
  * Created by palka on 25.11.15.
@@ -18,6 +19,7 @@ public class ControllerFragment extends Fragment implements View.OnTouchListener
 
     //used to determine inner circle dimensions
     private int INNER_CIRCLE_DIAMETER = 180;
+    private TextView connectionState;
 
     private View mInnerCircleView;
     private View mOuterCircleMarginView;
@@ -25,6 +27,8 @@ public class ControllerFragment extends Fragment implements View.OnTouchListener
     private ViewGroup mRootLayout;
     private int _xDelta;
     private int _yDelta;
+
+
 
     private final Handler mHandler = new Handler();
 
@@ -43,6 +47,14 @@ public class ControllerFragment extends Fragment implements View.OnTouchListener
         }
     };
 
+    public void setConnectionState(boolean isConnected)
+    {
+        if(isConnected)
+            connectionState.setVisibility(View.GONE);
+        else
+            connectionState.setVisibility(View.VISIBLE);
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -51,6 +63,7 @@ public class ControllerFragment extends Fragment implements View.OnTouchListener
         mRootLayout = (ViewGroup) rootView.findViewById(R.id.root_relative_layout);
         mInnerCircleView = mRootLayout.findViewById(R.id.inner_circle_view);
         mOuterCircleMarginView = mRootLayout.findViewById(R.id.outer_circle_view_margin);
+        connectionState = (TextView) mRootLayout.findViewById(R.id.connection_state_text_view);
 
         ViewTreeObserver vto = mOuterCircleMarginView.getViewTreeObserver();
         vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {

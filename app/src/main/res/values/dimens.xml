@@ -6,12 +6,14 @@
     <dimen name="margin_settings_horizontal">10dp</dimen>
     <dimen name="margin_settings_vertical">10dp</dimen>
 
-    <dimen name="margin_velocity_fargment_horizontal">60dp</dimen>
+
+    <dimen name="margin_velocity_fragment_horizontal">60dp</dimen>
 
     <dimen name="main_button_width">200dp</dimen>
     <dimen name="main_button_height">200dp</dimen>
 
     <dimen name="velocity_text_size">22dp</dimen>
+    <dimen name="connection_state_text_size">30dp</dimen>
 
     <dimen name="controller_inner_circle_diameter">90dp</dimen>
     <dimen name="controller_outer_circle_diameter">110dp</dimen>

@@ -34,7 +34,7 @@ public class MessageManager {
 
 
         message += String.format("%03d", Utilities.getAlpha());
-        message += Utilities.getVelocity();
+        message += Utilities.getVelocityStr();
         message += Constants.STOP_BYTE_STR;
         return message;
     }
