@@ -17,12 +17,10 @@ public class SettingsActivity extends Activity {
     EditText address_input;
     EditText port_camera_input;
     EditText port_tcp_input;
-    EditText command_input;
 
-    String ip_adr = "192.168.1.170";
+    String ip_adr = "192.168.1.169";
     int ip_port_camera = 8080;
     int ip_port_tcp = 80;
-    String ip_command = "?action=stream";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -34,18 +32,15 @@ public class SettingsActivity extends Activity {
         address_input = (EditText) findViewById(R.id.address_input);
         port_camera_input = (EditText) findViewById(R.id.port_input_camera);
         port_tcp_input = (EditText) findViewById(R.id.port_input_tcp);
-        command_input = (EditText) findViewById(R.id.command_input);
 
         if (extras != null) {
             ip_adr = extras.getString(Constants.IP_ADRESS_STR, ip_adr);
             ip_port_camera = extras.getInt(Constants.IP_PORT_CAMERA_STR, ip_port_camera);
             ip_port_tcp = extras.getInt(Constants.IP_PORT_CAMERA_STR, ip_port_tcp);
-            ip_command = extras.getString(Constants.IP_COMMAND_STR);
 
             address_input.setText(String.valueOf(ip_adr));
             port_camera_input.setText(String.valueOf(ip_port_camera));
             port_tcp_input.setText(String.valueOf(ip_port_tcp));
-            command_input.setText(ip_command);
         }
 
 
@@ -70,14 +65,11 @@ public class SettingsActivity extends Activity {
                             ip_port_tcp = Integer.parseInt(s);
                         }
 
-                        s = command_input.getText().toString();
-                        ip_command = s;
 
                         Intent intent = new Intent();
                         intent.putExtra(Constants.IP_ADRESS_STR, ip_adr);
                         intent.putExtra(Constants.IP_PORT_CAMERA_STR, ip_port_tcp);
                         intent.putExtra(Constants.IP_PORT_TCP_STR, ip_port_tcp);
-                        intent.putExtra(Constants.IP_COMMAND_STR, ip_command);
 
                         setResult(RESULT_OK, intent);
                         finish();

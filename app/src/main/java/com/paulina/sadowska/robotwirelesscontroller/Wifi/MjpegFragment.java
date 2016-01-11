@@ -62,7 +62,6 @@ public class MjpegFragment extends Fragment {
                 Intent settings_intent = new Intent(getActivity(), SettingsActivity.class);
                 settings_intent.putExtra("ip_adr", ip_adr);
                 settings_intent.putExtra("ip_port", ip_port);
-                settings_intent.putExtra("ip_command", ip_command);
                 startActivityForResult(settings_intent, REQUEST_SETTINGS);
                 return true;
         }
@@ -86,7 +85,6 @@ public class MjpegFragment extends Fragment {
         SharedPreferences preferences = getActivity().getSharedPreferences("SAVED_VALUES", getActivity().MODE_PRIVATE);
         ip_adr = preferences.getString(Constants.IP_ADRESS_STR, ip_adr);
         ip_port = preferences.getInt(Constants.IP_PORT_CAMERA_STR, ip_port);
-        ip_command = preferences.getString(Constants.IP_COMMAND_STR, ip_command);
 
         StringBuilder sb = new StringBuilder();
         sb.append(Constants.HTTP_STRING);

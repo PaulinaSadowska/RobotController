@@ -33,7 +33,7 @@ import com.paulina.sadowska.robotwirelesscontroller.VelocityFragment;
 
 public class BluetoothActivity extends AppCompatActivity implements BluetoothFragment.BluetoothActivityCallback {
 
-    public static final String TAG = "MainActivity";
+    public static final String TAG = "BluetoothActivity";
     public MessageManager manager;
     ReceivedDataFragment receivedDataFragment;
     ControllerFragment controllerFragment;

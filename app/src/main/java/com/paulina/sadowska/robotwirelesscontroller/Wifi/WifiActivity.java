@@ -251,7 +251,6 @@ public class WifiActivity extends AppCompatActivity {
                     SharedPreferences.Editor editor = preferences.edit();
                     editor.putString("ip_adr", ip_adr);
                     editor.putInt("ip_port", ip_port);
-                    editor.putString("ip_command", ip_command);
 
                     editor.commit();
 
