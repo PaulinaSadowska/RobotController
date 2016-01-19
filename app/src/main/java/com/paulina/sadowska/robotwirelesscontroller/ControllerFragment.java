@@ -50,9 +50,24 @@ public class ControllerFragment extends Fragment implements View.OnTouchListener
     public void setConnectionState(boolean isConnected)
     {
         if(isConnected)
+        {   //hide information about lack of connection
+            connectionState.requestLayout();
             connectionState.setVisibility(View.GONE);
+        }
         else
+        {   //show information about lack of connection
+            connectionState.requestLayout();
             connectionState.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public boolean getConnectionState()
+    {
+        connectionState.requestLayout();
+        if(connectionState.getVisibility() == View.GONE)
+            return true; //information about lack of connection hidden
+        else
+            return false; //information about lack of connection shown
     }
 
 
@@ -84,14 +99,19 @@ public class ControllerFragment extends Fragment implements View.OnTouchListener
             }
         });
 
+        if(getActivity().getLocalClassName().equals("Wifi.WifiActivity"))
+            connectionState.setText(getActivity().getString(R.string.control_not_allowed_wifi));
+        else
+            connectionState.setText(getActivity().getString(R.string.control_not_allowed_bluetooth));
+
         mInnerCircleView.setOnTouchListener(this);
         return rootView;
     }
 
 
     public void fragmentDimensionsChanged() {
-        //center after 10ms
-       mHandler.postDelayed(centerInnerCircle, 20);
+        //center after 25ms
+       mHandler.postDelayed(centerInnerCircle, 25);
     }
 
     private RelativeLayout.LayoutParams centerInnerCircle(RelativeLayout.LayoutParams layoutParams)

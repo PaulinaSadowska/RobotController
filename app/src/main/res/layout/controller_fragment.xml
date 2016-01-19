@@ -23,7 +23,7 @@
             android:gravity="center"
             android:background="@color/white_overlay"
             android:layout_centerInParent="true"
-            android:text="@string/control_not_allowed"
+            android:text="@string/control_not_allowed_wifi"
             android:textSize="@dimen/connection_state_text_size"
             android:fontFamily="sans-serif-light"
             android:id="@+id/connection_state_text_view"/>

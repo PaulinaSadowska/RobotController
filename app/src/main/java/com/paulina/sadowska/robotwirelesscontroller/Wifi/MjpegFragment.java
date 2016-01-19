@@ -35,15 +35,16 @@ public class MjpegFragment extends Fragment {
     private MjpegView mv = null;
     String URL;
 
-    private int width = 640;
-    private int height = 480;
+    private int width = Constants.CAMERA_WIDTH;
+    private int height = Constants.CAMERA_HEIGHT;
 
     // for settings (network and resolution)
     private static final int REQUEST_SETTINGS = 0;
 
-    private String ip_adr = "192.168.1.170";
-    private int ip_port = 8080;
-    private String ip_command = "?action=stream";
+    private String ip_adr = Constants.IP_ADDRESS_DEFAULT;
+    private int ip_port_tcp = Constants.IP_PORT_TCP_DEFAULT;
+    private int ip_port_camera = Constants.IP_PORT_CAMERA_DEFAULT;
+    private String ip_command = Constants.IP_CAMERA_COMMAND_DEFAULT;
 
     private boolean suspending = false;
 
@@ -59,9 +60,15 @@ public class MjpegFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.settings:
+                SharedPreferences preferences = getActivity().getSharedPreferences(Constants.SAVED_VALUES_PREF_STR, getActivity().MODE_PRIVATE);
+                ip_adr = preferences.getString(Constants.IP_ADRESS_STR, ip_adr);
+                ip_port_tcp = preferences.getInt(Constants.IP_PORT_TCP_STR, ip_port_tcp);
+                ip_port_camera = preferences.getInt(Constants.IP_PORT_CAMERA_STR, ip_port_camera);
+
                 Intent settings_intent = new Intent(getActivity(), SettingsActivity.class);
-                settings_intent.putExtra("ip_adr", ip_adr);
-                settings_intent.putExtra("ip_port", ip_port);
+                settings_intent.putExtra(Constants.IP_ADRESS_STR, ip_adr);
+                settings_intent.putExtra(Constants.IP_PORT_TCP_STR, ip_port_tcp);
+                settings_intent.putExtra(Constants.IP_PORT_CAMERA_STR, ip_port_camera);
                 startActivityForResult(settings_intent, REQUEST_SETTINGS);
                 return true;
         }
@@ -82,15 +89,16 @@ public class MjpegFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        SharedPreferences preferences = getActivity().getSharedPreferences("SAVED_VALUES", getActivity().MODE_PRIVATE);
+        SharedPreferences preferences = getActivity().getSharedPreferences(Constants.SAVED_VALUES_PREF_STR, getActivity().MODE_PRIVATE);
         ip_adr = preferences.getString(Constants.IP_ADRESS_STR, ip_adr);
-        ip_port = preferences.getInt(Constants.IP_PORT_CAMERA_STR, ip_port);
+        ip_port_tcp = preferences.getInt(Constants.IP_PORT_TCP_STR, ip_port_tcp);
+        ip_port_camera = preferences.getInt(Constants.IP_PORT_CAMERA_STR, ip_port_camera);
 
         StringBuilder sb = new StringBuilder();
         sb.append(Constants.HTTP_STRING);
         sb.append(ip_adr);
         sb.append(Constants.COLON_STRING);
-        sb.append(ip_port);
+        sb.append(ip_port_camera);
         sb.append(Constants.SLASH_STRING);
         sb.append(ip_command);
         URL = new String(sb);

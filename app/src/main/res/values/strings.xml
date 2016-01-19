@@ -23,6 +23,7 @@
     <string name="insecure_connect">Connect a device - Insecure</string>
 
     <string name="settings">Connection settings</string>
+    <string name="settings_bluetooth">Select device</string>
 
     <string name="ip_setting_label">Address</string>
     <string name="port_camera_setting_label">Camera port</string>
@@ -35,7 +36,7 @@
     <string name="command_streaming">\?action=stream</string>
     <string name="command_videofeed">videofeed</string>
 
-    <string name="settings_done">Done</string>
+    <string name="settings_done">connect</string>
 
     <string name="title_not_connected_to_camera">Not connected to camera</string>
     <string name="title_connected_to_camera">Connected to camera</string>
@@ -43,6 +44,7 @@
     <string name="title_imageerror">Error on preparing images</string>
 
     <!-- Connection states status in ControllerFragment-->
-    <string name="control_not_allowed">Control not available. \n Check connection state </string>
+    <string name="control_not_allowed_wifi">Control not available. \n Check the connection settings \n and reconnect.</string>
+    <string name="control_not_allowed_bluetooth">Control not available. \n Press \"select device\" \n to connect to specific device.</string>
 
 </resources>

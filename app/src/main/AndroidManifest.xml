@@ -26,9 +26,11 @@
 
 
         <activity android:name=".Bluetooth.BluetoothActivity"
+            android:parentActivityName=".MainActivity"
             android:screenOrientation="landscape"/>
 
         <activity android:name=".Wifi.WifiActivity"
+            android:parentActivityName=".MainActivity"
             android:screenOrientation="landscape"
             android:theme="@style/FullscreenTheme"/>
 
@@ -36,11 +38,13 @@
         <activity
             android:name=".Bluetooth.DeviceListActivity"
             android:configChanges="orientation|keyboardHidden"
+            android:parentActivityName=".Bluetooth.BluetoothActivity"
             android:label="@string/select_device"
             android:screenOrientation="landscape"
             android:theme="@style/SettingsDialog"/>
 
         <activity android:name=".Wifi.SettingsActivity"
+            android:parentActivityName=".Wifi.WifiActivity"
             android:theme="@style/SettingsDialog"
             android:screenOrientation="landscape"
             android:label="@string/settings"

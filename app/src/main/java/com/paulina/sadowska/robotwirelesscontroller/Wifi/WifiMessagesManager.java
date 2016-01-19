@@ -1,7 +1,10 @@
 package com.paulina.sadowska.robotwirelesscontroller.Wifi;
 
+import android.content.Context;
 import android.os.AsyncTask;
+import android.widget.Toast;
 
+import com.paulina.sadowska.robotwirelesscontroller.Constants;
 import com.paulina.sadowska.robotwirelesscontroller.MessageManager;
 
 /**
@@ -13,16 +16,18 @@ public class WifiMessagesManager {
     private String serverIP;
     private int port;
     MessageManager manager;
+    Context context;
 
     public void connect(){
         new connectTask().execute("");
     }
 
-    public WifiMessagesManager(MessageManager m, String serverIP, int port)
+    public WifiMessagesManager(MessageManager m, String serverIP, int port, Context c)
     {
         this.serverIP = serverIP;
         this.port = port;
         manager = m;
+        context = c;
     }
 
     public boolean getConnectionState() {
@@ -39,7 +44,7 @@ public class WifiMessagesManager {
 
     public void sendMessage(String textToSend){
         //sends the message to the server
-        if (mTcpClient != null) {
+        if (mTcpClient != null && getConnectionState()) {
             mTcpClient.sendMessage(textToSend);
         }
     }
@@ -68,7 +73,10 @@ public class WifiMessagesManager {
             super.onProgressUpdate(values);
             if (values[0] != null) {
                 //display message
-                manager.WriteReceivedMessageToInBuffer(values[0]);
+                if(values[0] == Constants.CONNECTION_ESTABLISHED_MSG)
+                    Toast.makeText(context, values[0], Toast.LENGTH_SHORT).show();
+                else
+                    manager.WriteReceivedMessageToInBuffer(values[0]);
             }
         }
     }

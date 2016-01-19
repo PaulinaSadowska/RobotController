@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -32,8 +33,9 @@ public class WifiActivity extends AppCompatActivity {
 
     // for settings (network and resolution)
     private static final int REQUEST_SETTINGS = 65536;
-    private String ip_adr = "192.168.1.170";
-    private int ip_port = 8080;
+    private String ip_adr = Constants.IP_ADDRESS_DEFAULT;
+    private int ip_port_tcp = Constants.IP_PORT_TCP_DEFAULT;
+    private int ip_port_camera = Constants.IP_PORT_CAMERA_DEFAULT;
     private Handler controlMessageThread;
     private WifiMessagesManager wifiManager;
     private MessageManager messageManager;
@@ -110,7 +112,6 @@ public class WifiActivity extends AppCompatActivity {
             hide();
         }
     };
-    private boolean wasConnected = false;
     // Define the task to be run here
     private Runnable sendControlMessage = new Runnable() {
         @Override
@@ -119,26 +120,23 @@ public class WifiActivity extends AppCompatActivity {
             {
                 if(wifiManager.getConnectionState())
                 {
-                    if(!wasConnected)
+                    if(!controllerFragment.getConnectionState())
                         controllerFragment.setConnectionState(true);
 
                     wifiManager.sendMessage(messageManager.getMessageText());
                     controlMessageThread.postDelayed(sendControlMessage, Constants.TIME_TO_SEND_CONTROL_MSG_MS);
-                    wasConnected = true;
                 }
                 else
                 {
-                    if(wasConnected)
+                    if(controllerFragment.getConnectionState())
                         controllerFragment.setConnectionState(false);
                     controlMessageThread.postDelayed(sendControlMessage, 1000);
-                    wasConnected = false;
                 }
             }
             else{
-                if(wasConnected)
+                if(controllerFragment.getConnectionState())
                     controllerFragment.setConnectionState(false);
                 controlMessageThread.postDelayed(sendControlMessage, 1000);
-                wasConnected = false;
             }
         }
     };
@@ -168,11 +166,12 @@ public class WifiActivity extends AppCompatActivity {
         }
 
         controlMessageThread = new Handler();
-        SharedPreferences preferences = getSharedPreferences("SAVED_VALUES", MODE_PRIVATE);
+        SharedPreferences preferences = getSharedPreferences(Constants.SAVED_VALUES_PREF_STR, MODE_PRIVATE);
         mjpegFragment = (FrameLayout) findViewById(R.id.mjpeg_fragment);
 
         ip_adr = preferences.getString(Constants.IP_ADRESS_STR, ip_adr);
-        ip_port = preferences.getInt(Constants.IP_PORT_TCP_STR, ip_port);
+        ip_port_tcp = preferences.getInt(Constants.IP_PORT_TCP_STR, ip_port_tcp);
+        ip_port_camera = preferences.getInt(Constants.IP_PORT_CAMERA_STR, ip_port_camera);
 
         mjpegFragment.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -196,20 +195,36 @@ public class WifiActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
+        SharedPreferences preferences = getSharedPreferences(Constants.SAVED_VALUES_PREF_STR, MODE_PRIVATE);
+        ip_adr = preferences.getString(Constants.IP_ADRESS_STR, ip_adr);
+        ip_port_tcp = preferences.getInt(Constants.IP_PORT_TCP_STR, ip_port_tcp);
+        ip_port_camera = preferences.getInt(Constants.IP_PORT_CAMERA_STR, ip_port_camera);
+
         messageManager = new MessageManager(new MessageManager.OnMessageReceived() {
             @Override
             public void messageReceived() {
                 receivedDataFragment.bindData();
             }
         });
-        wifiManager = new WifiMessagesManager(messageManager, ip_adr, 80);
-        wifiManager.connect();
+        if(wifiManager == null)
+        {
+            wifiManager = new WifiMessagesManager(messageManager, ip_adr, ip_port_tcp, this);
+            wifiManager.connect();
+        }
+        else
+        {
+            wifiManager.disconnect();
+            wifiManager = null;
+            wifiManager = new WifiMessagesManager(messageManager, ip_adr, ip_port_tcp, this);
+            wifiManager.connect();
+        }
+        Log.d("WifiActivity", "Wifi Activity STARTED");
         controlMessageThread.post(sendControlMessage);
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onPause() {
+        super.onPause();
         wifiManager.disconnect();
     }
 
@@ -240,18 +255,25 @@ public class WifiActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d("WifiActivity", "Wifi Activity FINISHED");
+    }
+
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case REQUEST_SETTINGS:
                 if (resultCode == Activity.RESULT_OK) {
-                    String ip_adr = data.getStringExtra("ip_adr");
-                    int ip_port = data.getIntExtra("ip_port", 8080);
-                    String ip_command = data.getStringExtra("ip_command");
-                    SharedPreferences preferences = getSharedPreferences("SAVED_VALUES", MODE_PRIVATE);
-                    SharedPreferences.Editor editor = preferences.edit();
-                    editor.putString("ip_adr", ip_adr);
-                    editor.putInt("ip_port", ip_port);
+                    String ip_adr = data.getStringExtra(Constants.IP_ADRESS_STR);
+                    ip_port_camera = data.getIntExtra(Constants.IP_PORT_CAMERA_STR, ip_port_camera);
+                    ip_port_tcp = data.getIntExtra(Constants.IP_PORT_TCP_STR, ip_port_tcp);
 
+                    SharedPreferences preferences = getSharedPreferences(Constants.SAVED_VALUES_PREF_STR, MODE_PRIVATE);
+                    SharedPreferences.Editor editor = preferences.edit();
+                    editor.putString(Constants.IP_ADRESS_STR, ip_adr);
+                    editor.putInt(Constants.IP_PORT_TCP_STR, ip_port_tcp);
+                    editor.putInt(Constants.IP_PORT_CAMERA_STR, ip_port_camera);
                     editor.commit();
 
                     new RestartApp().execute();
