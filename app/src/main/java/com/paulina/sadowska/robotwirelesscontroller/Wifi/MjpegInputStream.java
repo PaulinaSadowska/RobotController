@@ -121,7 +121,7 @@ public class MjpegInputStream extends DataInputStream {
         return Integer.parseInt(props.getProperty(CONTENT_LENGTH));
     }
 
-    public Bitmap readMjpegFrame() throws IOException {
+    /*public Bitmap readMjpegFrame() throws IOException {
         mark(FRAME_MAX_LENGTH);
         int headerLen;
         try {
@@ -186,7 +186,7 @@ public class MjpegInputStream extends DataInputStream {
         } else {
             return null;
         }
-    }
+    }*/
 
     public int readMjpegFrame(Bitmap bmp) throws IOException {
         mark(FRAME_MAX_LENGTH);
@@ -248,7 +248,7 @@ public class MjpegInputStream extends DataInputStream {
 
         readFully(frameData, 0, mContentLength);
 
-        if (count++ % skip == 0) {
+        if (count++ % skip != 0) {
             return pixeltobmp(frameData, mContentLength, bmp);
         } else {
             return 0;

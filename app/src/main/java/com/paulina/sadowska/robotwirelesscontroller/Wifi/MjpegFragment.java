@@ -165,17 +165,6 @@ public class MjpegFragment extends Fragment {
         super.onDestroy();
     }
 
-
-    public void setImageError() {
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                setStatus(R.string.title_imageerror);
-                return;
-            }
-        });
-    }
-
     public class DoRead extends AsyncTask<String, Void, MjpegInputStream> {
 
 
@@ -191,19 +180,16 @@ public class MjpegFragment extends Fragment {
         protected void onPostExecute(MjpegInputStream result) {
             mv.setSource(result);
             if (result != null) {
-                result.setSkip(1);
+                result.setSkip(3);
                 setStatus(R.string.app_name);
             } else {
                 setStatus(R.string.title_not_connected_to_camera);
             }
-            mv.setDisplayMode(MjpegView.SIZE_FULLSCREEN_CENTERED);
             int w = mv.getWidth();
-           // int h = mv.getHeight();
             int h = 3 * w / 4;
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(w, h);
             layoutParams.setMargins(5, 5, w, h);
             mv.setLayoutParams(layoutParams);
-            mv.showFps(true);
         }
 
 

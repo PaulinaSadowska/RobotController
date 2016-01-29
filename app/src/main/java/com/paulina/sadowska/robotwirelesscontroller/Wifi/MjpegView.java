@@ -17,24 +17,16 @@ public class MjpegView extends SurfaceView implements SurfaceHolder.Callback {
 
     public final static int POSITION_LOWER_RIGHT = 6;
 
-    public final static int SIZE_STANDARD = 1;
-    public final static int SIZE_BEST_FIT = 4;
-    public final static int SIZE_FULLSCREEN = 8;
-    public final static int SIZE_FULLSCREEN_CENTERED = 16;
-
     SurfaceHolder holder;
-    Context saved_context;
 
     private MjpegViewThread thread;
     private MjpegInputStream mIn = null;
-    private boolean showFps = false;
     private boolean mRun = false;
     private boolean surfaceDone = false;
 
     private int ovlPos;
     private int dispWidth;
     private int dispHeight;
-    private int displayMode;
 
     private boolean suspending = false;
 
@@ -47,43 +39,15 @@ public class MjpegView extends SurfaceView implements SurfaceHolder.Callback {
 
     public class MjpegViewThread extends Thread {
         private SurfaceHolder mSurfaceHolder;
-        private int frameCounter = 0;
-        private long start;
-        private String fps = "";
 
 
-        public MjpegViewThread(SurfaceHolder surfaceHolder, Context context) {
+        public MjpegViewThread(SurfaceHolder surfaceHolder) {
             mSurfaceHolder = surfaceHolder;
         }
 
-        private Rect destRect(int bmw, int bmh) {
-            int tempx;
-            int tempy;
-            if (displayMode == MjpegView.SIZE_STANDARD) {
-                tempx = (dispWidth / 2) - (bmw / 2);
-                tempy = (dispHeight / 2) - (bmh / 2);
-                return new Rect(tempx, tempy, bmw + tempx, bmh + tempy);
-            }
-            if (displayMode == MjpegView.SIZE_BEST_FIT) {
-                float bmasp = (float) bmw / (float) bmh;
-                bmw = dispWidth;
-                bmh = (int) (dispWidth / bmasp);
-                if (bmh > dispHeight) {
-                    bmh = dispHeight;
-                    bmw = (int) (dispHeight * bmasp);
-                }
-                tempx = (dispWidth / 2) - (bmw / 2);
-                tempy = (dispHeight / 2) - (bmh / 2);
-                return new Rect(tempx, tempy, bmw + tempx, bmh + tempy);
-            }
-            if (displayMode == MjpegView.SIZE_FULLSCREEN)
-                return new Rect(0, 0, dispWidth, dispHeight);
-            if (displayMode == MjpegView.SIZE_FULLSCREEN_CENTERED)
-            {
+        private Rect destRect() {
                 int translY = 0;
                 return new Rect(0, translY, dispWidth, dispHeight-translY);
-            }
-            return null;
         }
 
         public void setSurfaceSize(int width, int height) {
@@ -93,31 +57,12 @@ public class MjpegView extends SurfaceView implements SurfaceHolder.Callback {
             }
         }
 
-        private Bitmap makeFpsOverlay(Paint p) {
-            Rect b = new Rect();
-            p.getTextBounds(fps, 0, fps.length(), b);
-
-            // false indentation to fix forum layout             
-            Bitmap bm = Bitmap.createBitmap(b.width(), b.height(), Bitmap.Config.ARGB_8888);
-
-            Canvas c = new Canvas(bm);
-            c.drawRect(0, 0, b.width(), b.height(), p);
-            c.drawText(fps, -b.left, b.bottom - b.top - p.descent(), p);
-            return bm;
-        }
-
         public void run() {
-          //  start = System.currentTimeMillis();
-           // PorterDuffXfermode mode = new PorterDuffXfermode(PorterDuff.Mode.DST_OVER);
-
-            int width;
-            int height;
             Paint p = new Paint();
-            Bitmap ovl = null;
 
             while (mRun) {
 
-                Rect destRect = null;
+                Rect destRect;
                 Canvas c = null;
 
                 if (surfaceDone) {
@@ -129,39 +74,16 @@ public class MjpegView extends SurfaceView implements SurfaceHolder.Callback {
                         int ret = mIn.readMjpegFrame(bmp);
 
                         if (ret == -1) {
-                           // ((MjpegFragment) saved_context).setImageError();
+                            //error
                             return;
                         }
 
-                        destRect = destRect(bmp.getWidth(), bmp.getHeight());
+                        destRect = destRect();
                         c = mSurfaceHolder.lockCanvas();
                         synchronized (mSurfaceHolder) {
 
                             if(c!=null)
                                 c.drawBitmap(bmp, null, destRect, p);
-
-                           /* if (showFps) {
-                                p.setXfermode(mode);
-                                if (ovl != null) {
-
-                                    // false indentation to fix forum layout
-                                    height = ((ovlPos & 1) == 1) ? destRect.top : destRect.bottom - ovl.getHeight();
-                                    width = ((ovlPos & 8) == 8) ? destRect.left : destRect.right - ovl.getWidth();
-
-                                    c.drawBitmap(ovl, width, height, null);
-                                }
-                                p.setXfermode(null);
-                                frameCounter++;
-                                if ((System.currentTimeMillis() - start) >= 1000) {
-                                    fps = String.valueOf(frameCounter) + "fps";
-                                    frameCounter = 0;
-                                    start = System.currentTimeMillis();
-                                    if (ovl != null) ovl.recycle();
-                                    Log.d("FPS", fps + "");
-                                }
-                            }*/
-
-
                         }
 
                     } catch (IOException e) {
@@ -174,16 +96,14 @@ public class MjpegView extends SurfaceView implements SurfaceHolder.Callback {
         }
     }
 
-    private void init(Context context) {
+    private void init() {
 
         //SurfaceHolder holder = getHolder();
         holder = getHolder();
-        saved_context = context;
         holder.addCallback(this);
-        thread = new MjpegViewThread(holder, context);
+        thread = new MjpegViewThread(holder);
         setFocusable(true);
         ovlPos = MjpegView.POSITION_LOWER_RIGHT;
-        displayMode = MjpegView.SIZE_BEST_FIT;
         dispWidth = getWidth();
         dispHeight = getHeight();
     }
@@ -192,7 +112,7 @@ public class MjpegView extends SurfaceView implements SurfaceHolder.Callback {
         if (mIn != null) {
             mRun = true;
             if (thread == null) {
-                thread = new MjpegViewThread(holder, saved_context);
+                thread = new MjpegViewThread(holder);
             }
             thread.start();
         }
@@ -204,7 +124,7 @@ public class MjpegView extends SurfaceView implements SurfaceHolder.Callback {
                 mRun = true;
                 SurfaceHolder holder = getHolder();
                 holder.addCallback(this);
-                thread = new MjpegViewThread(holder, saved_context);
+                thread = new MjpegViewThread(holder);
                 thread.start();
                 suspending = false;
             }
@@ -245,7 +165,7 @@ public class MjpegView extends SurfaceView implements SurfaceHolder.Callback {
 
     public MjpegView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init(context);
+        init();
     }
 
     public void surfaceChanged(SurfaceHolder holder, int f, int w, int h) {
@@ -261,15 +181,11 @@ public class MjpegView extends SurfaceView implements SurfaceHolder.Callback {
 
     public MjpegView(Context context) {
         super(context);
-        init(context);
+        init();
     }
 
     public void surfaceCreated(SurfaceHolder holder) {
         surfaceDone = true;
-    }
-
-    public void showFps(boolean b) {
-        showFps = b;
     }
 
     public void setSource(MjpegInputStream source) {
@@ -279,10 +195,6 @@ public class MjpegView extends SurfaceView implements SurfaceHolder.Callback {
         } else {
             resumePlayback();
         }
-    }
-
-    public void setDisplayMode(int s) {
-        displayMode = s;
     }
 
     public void setResolution(int w, int h) {
