@@ -34,7 +34,13 @@ public class MjpegInputStream extends DataInputStream {
     private static final boolean DEBUG = false;
 
     static {
-        System.loadLibrary("ImageProc");
+        try{
+            System.loadLibrary("ImageProc");
+        }
+        catch(Exception e)
+        {
+            Log.e("LIB", "Error when loading ImageProc Lib: "+e);
+        }
     }
 
     public native int pixeltobmp(byte[] jp, int l, Bitmap bmp);

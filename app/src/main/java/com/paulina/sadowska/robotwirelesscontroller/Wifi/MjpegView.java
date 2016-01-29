@@ -4,8 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.SurfaceHolder;
@@ -82,8 +80,6 @@ public class MjpegView extends SurfaceView implements SurfaceHolder.Callback {
                 return new Rect(0, 0, dispWidth, dispHeight);
             if (displayMode == MjpegView.SIZE_FULLSCREEN_CENTERED)
             {
-                //TODO - repair it when camera is stable -.-
-
                 int translY = 0;
                 return new Rect(0, translY, dispWidth, dispHeight-translY);
             }
@@ -111,8 +107,8 @@ public class MjpegView extends SurfaceView implements SurfaceHolder.Callback {
         }
 
         public void run() {
-            start = System.currentTimeMillis();
-            PorterDuffXfermode mode = new PorterDuffXfermode(PorterDuff.Mode.DST_OVER);
+          //  start = System.currentTimeMillis();
+           // PorterDuffXfermode mode = new PorterDuffXfermode(PorterDuff.Mode.DST_OVER);
 
             int width;
             int height;
@@ -132,10 +128,10 @@ public class MjpegView extends SurfaceView implements SurfaceHolder.Callback {
 
                         int ret = mIn.readMjpegFrame(bmp);
 
-                       /* if (ret == -1) {
-                            ((MjpegFragment) saved_context).setImageError();
+                        if (ret == -1) {
+                           // ((MjpegFragment) saved_context).setImageError();
                             return;
-                        }*/
+                        }
 
                         destRect = destRect(bmp.getWidth(), bmp.getHeight());
                         c = mSurfaceHolder.lockCanvas();
@@ -144,7 +140,7 @@ public class MjpegView extends SurfaceView implements SurfaceHolder.Callback {
                             if(c!=null)
                                 c.drawBitmap(bmp, null, destRect, p);
 
-                            if (showFps) {
+                           /* if (showFps) {
                                 p.setXfermode(mode);
                                 if (ovl != null) {
 
@@ -161,8 +157,9 @@ public class MjpegView extends SurfaceView implements SurfaceHolder.Callback {
                                     frameCounter = 0;
                                     start = System.currentTimeMillis();
                                     if (ovl != null) ovl.recycle();
+                                    Log.d("FPS", fps + "");
                                 }
-                            }
+                            }*/
 
 
                         }

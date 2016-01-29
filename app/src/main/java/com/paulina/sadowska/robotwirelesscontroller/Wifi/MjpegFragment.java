@@ -166,8 +166,6 @@ public class MjpegFragment extends Fragment {
     }
 
 
-
-
     public void setImageError() {
         handler.post(new Runnable() {
             @Override
@@ -205,7 +203,7 @@ public class MjpegFragment extends Fragment {
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(w, h);
             layoutParams.setMargins(5, 5, w, h);
             mv.setLayoutParams(layoutParams);
-            mv.showFps(false);
+            mv.showFps(true);
         }
 
 
@@ -217,7 +215,6 @@ public class MjpegFragment extends Fragment {
     private InputStream downloadUrl(String myurl) throws IOException {
         // Only display the first 500 characters of the retrieved
         // web page content.
-
 
 
             URL url = new URL(myurl);
@@ -233,14 +230,12 @@ public class MjpegFragment extends Fragment {
             is = conn.getInputStream();
             return is;
 
-
+            /*
             // TODO - Makes sure that the InputStream is closed after the app is
             // finished using it.
-         /*finally {
             if (is != null) {
                 is.close();
-            }
-        }*/
+            }*/
     }
 
     /**

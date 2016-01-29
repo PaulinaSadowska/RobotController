@@ -130,13 +130,13 @@ public class WifiActivity extends AppCompatActivity {
                 {
                     if(controllerFragment.getConnectionState())
                         controllerFragment.setConnectionState(false);
-                    controlMessageThread.postDelayed(sendControlMessage, 1000);
+                    controlMessageThread.postDelayed(sendControlMessage, Constants.TIME_TO_CHECK_CONNECTION_STATE);
                 }
             }
             else{
                 if(controllerFragment.getConnectionState())
                     controllerFragment.setConnectionState(false);
-                controlMessageThread.postDelayed(sendControlMessage, 1000);
+                controlMessageThread.postDelayed(sendControlMessage, Constants.TIME_TO_CHECK_CONNECTION_STATE);
             }
         }
     };

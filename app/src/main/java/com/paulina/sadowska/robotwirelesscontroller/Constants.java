@@ -7,7 +7,8 @@ import com.paulina.sadowska.robotwirelesscontroller.Bluetooth.BluetoothService;
  */
 public interface Constants {
 
-    int TIME_TO_SEND_CONTROL_MSG_MS = 200; //time in ms
+    int TIME_TO_SEND_CONTROL_MSG_MS = 400; //time in ms
+    int TIME_TO_CHECK_CONNECTION_STATE = 1400; //time in ms
 
     // Message types sent from the BluetoothChatService Handler
     int MESSAGE_STATE_CHANGE = 1;
