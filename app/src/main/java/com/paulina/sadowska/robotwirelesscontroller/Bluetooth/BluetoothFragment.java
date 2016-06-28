@@ -117,12 +117,12 @@ public class BluetoothFragment extends Fragment {
             }
             else if(Utilities.isDeviceConnected()){
                 // Check if connected after 1 second
-                controlMessageThread.postDelayed(sendControlMessage, 1000);
+                controlMessageThread.postDelayed(sendControlMessage, Constants.TIME_TO_CHECK_CONNECTION_STATE);
             }
             else
             {
                 // Check if connected after 1 second
-                controlMessageThread.postDelayed(sendControlMessage, 3000);
+                controlMessageThread.postDelayed(sendControlMessage,Constants.TIME_TO_CHECK_CONNECTION_STATE);
             }
         }
     };

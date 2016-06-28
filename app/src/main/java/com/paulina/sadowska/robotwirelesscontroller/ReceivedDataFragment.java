@@ -39,8 +39,8 @@ public class ReceivedDataFragment extends Fragment {
 
     public void bindData()
     {
-        mCurrent1.setText(Html.fromHtml("I<sub><small>1</sub></small> = " + (int)Utilities.getCurrentmV(1) + " mA"));
-        mCurrent2.setText(Html.fromHtml("I<sub><small>2</sub></small> = " + (int)Utilities.getCurrentmV(2) + " mA"));
+        mCurrent1.setText(Html.fromHtml("I<sub><small>L</sub></small> = " + (int)Utilities.getCurrentmV(2) + " mA"));
+        mCurrent2.setText(Html.fromHtml("I<sub><small>R</sub></small> = " + (int)Utilities.getCurrentmV(1) + " mA"));
     }
 
 }

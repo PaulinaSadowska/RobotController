@@ -112,7 +112,7 @@ public class TCPClient {
 
                 //in this while the client listens for the messages sent by the server
                 while (mRun) {
-                        serverMessage = in.readLine();
+                     serverMessage = in.readLine();
 
                         if (serverMessage!=null && mMessageListener != null)
                         {

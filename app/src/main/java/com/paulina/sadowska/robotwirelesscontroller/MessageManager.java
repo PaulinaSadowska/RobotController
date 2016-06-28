@@ -1,5 +1,7 @@
 package com.paulina.sadowska.robotwirelesscontroller;
 
+import android.util.Log;
+
 /**
  * Created by palka on 18.12.15.
  */
@@ -64,6 +66,7 @@ public class MessageManager {
 
         Utilities.setCurrentmV(current1, 1);
         Utilities.setCurrentmV(current2, 2);
+        Log.d("CURRENT", "current1: " + current1 + "current2: " + current2);
         receiveListener.messageReceived();
     }
 

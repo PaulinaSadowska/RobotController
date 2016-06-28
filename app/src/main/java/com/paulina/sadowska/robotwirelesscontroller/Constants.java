@@ -7,7 +7,7 @@ import com.paulina.sadowska.robotwirelesscontroller.Bluetooth.BluetoothService;
  */
 public interface Constants {
 
-    int TIME_TO_SEND_CONTROL_MSG_MS = 400; //time in ms
+    int TIME_TO_SEND_CONTROL_MSG_MS = 200; //time in ms
     int TIME_TO_CHECK_CONNECTION_STATE = 1400; //time in ms
 
     // Message types sent from the BluetoothChatService Handler
@@ -30,14 +30,8 @@ public interface Constants {
     String STOP_BYTE_STR = "}";
     int INPUT_MESSAGE_LENGTH = 12;
 
-    int INPUT_CONNECTION_MESSAGE_LENGTH = 3;
-
-    int INDEX_CONNECTION_INFO = 1;
-
     String CONNECTION_SETUP_MESSAGE = "{C}";
     String CONNECTION_STOP_MESSAGE = "{D}";
-    char CONNECTION_ACK_BYTE = 'A';
-    char CONNECTION_ERROR_BYTE = 'E';
 
     //second format
     String ROBOT_STOP_STR = "S"; //STOP ROBOT
